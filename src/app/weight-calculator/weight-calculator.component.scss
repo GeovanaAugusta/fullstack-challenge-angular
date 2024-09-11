@@ -1,0 +1,203 @@
+.flex-center-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.form-title {
+    font-weight: 600;
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.button-group button {
+    background-color: #8d29ac;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.button-group button:hover {
+    background-color: #7b1f8b;
+}
+
+.button-group button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.button-group button.incluir {
+    background-color: #28a745;
+}
+
+.button-group button.alterar {
+    background-color: #ffc107;
+}
+
+.button-group button.excluir {
+    background-color: #dc3545;
+}
+
+.button-group button.alterar:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.button-group button.excluir:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.button-group button.pesquisar {
+    background-color: #6c757d;
+}
+
+.button-group svg {
+    fill: currentColor;
+    width: 20px;
+    height: 20px;
+}
+
+.error-message {
+    color: red;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+}
+
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.form-group {
+    flex: 1;
+    margin-right: 16px;
+}
+
+.form-group:last-child {
+    margin-right: 0;
+}
+
+.error input,
+.error select {
+    border-color: red;
+}
+
+form select.error {
+    border-color: red;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #EEEEEE;
+    margin: 0;
+    padding: 0;
+}
+
+
+form {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 600px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+
+fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+legend {
+    font-size: 22px;
+    color: #8d29ac;
+    margin-bottom: 15px;
+}
+
+form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #555;
+}
+
+form input,
+form select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+form input:focus,
+form select:focus {
+    border-color: #4a90e2;
+    outline: none;
+    box-shadow: 0 0 4px rgba(74, 144, 226, 0.3);
+}
+
+button {
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button.incluir {
+    background-color: #4CAF50;
+}
+
+button.alterar {
+    background-color: #FFC107;
+}
+
+button.excluir {
+    background-color: #F44336;
+}
+
+button.excluir .bi-trash {
+    width: 13px;
+    height: 13px;
+}
+
+button.pesquisar {
+    background-color: #2196F3;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
