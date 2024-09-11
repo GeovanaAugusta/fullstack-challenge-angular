@@ -1,1 +1,113 @@
-<p>weight-calculator works!</p>
+<section class="flex-center-column">
+    <form #personForm="ngForm" (ngSubmit)="search(personForm)">
+        <fieldset>
+            <legend id="form-title" class="form-title">Calculadora de Peso Ideal</legend>
+
+            <div class="form-row">
+                <div class="form-group"
+                    [ngClass]="{'error': !personForm.controls['name']?.valid && personForm.controls['name']?.touched}">
+                    <label for="name">Nome:</label>
+                    <input placeholder="Preencha com seu nome" type="text" id="name" name="name"
+                        [(ngModel)]="personData.name" required #name="ngModel" aria-required="true" />
+                    <div *ngIf="!name.valid && name.touched" class="error-message">
+                        {{messageError}}
+                    </div>
+                </div>
+
+                <div class="form-group"
+                    [ngClass]="{'error': !personForm.controls['born']?.valid && personForm.controls['born']?.touched}">
+                    <label for="born">Data de Nascimento:</label>
+                    <input placeholder="Preencha com sua data de nascimento" type="date" id="born" name="born"
+                        [(ngModel)]="personData.born" required #born="ngModel" aria-required="true" />
+                    <div *ngIf="!born.valid && born.touched" class="error-message">
+                        {{messageError}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group" [ngClass]="{'error': !document.valid && document.touched}">
+                    <label for="document">CPF:</label>
+                    <input type="text" id="document" name="document" [(ngModel)]="personData.document" required
+                        #document="ngModel" aria-required="true" (input)="formatCPF($event)" maxlength="14"
+                        minlength="14" />
+                    <div *ngIf="!document.valid && document.touched" class="error-message">
+                        {{ messageError }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="gender">Sexo:</label>
+                    <select [ngClass]="{'error': !gender.valid && gender.touched}" id="gender" name="gender"
+                        [(ngModel)]="personData.gender" #gender="ngModel">
+                        <option value="M">Masculino</option>
+                        <option value="F">Feminino</option>
+                    </select>
+                    <div *ngIf="!gender.valid && gender.touched" class="error-message">
+                        {{messageError}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group"
+                    [ngClass]="{'error': !personForm.controls['height']?.valid && personForm.controls['height']?.touched}">
+                    <label for="height">Altura(m):</label>
+                    <input type="number" id="height" name="height" [(ngModel)]="personData.height" required
+                        #height="ngModel" aria-required="true" />
+                    <div *ngIf="!height.valid && height.touched" class="error-message">
+                        {{messageError}}
+                    </div>
+                </div>
+
+                <div class="form-group"
+                    [ngClass]="{'error': !personForm.controls['weight']?.valid && personForm.controls['weight']?.touched}">
+                    <label for="weight">Peso(Kg):</label>
+                    <input type="number" id="weight" name="weight" [(ngModel)]="personData.weight" required
+                        #weight="ngModel" aria-required="true" />
+                    <div *ngIf="!weight.valid && weight.touched" class="error-message">
+                        {{messageError}}
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <div class="button-group">
+            <button type="button" class="incluir" (click)="add()">
+                Incluir
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                    <path d="M12 5v14m7-7H5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </button>
+            <button [disabled]="!selectedPerson" type="button" class="alterar" (click)="update()">
+                Alterar
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil"
+                    viewBox="0 0 16 16">
+                    <path
+                        d="M12.146 2.854a.5.5 0 0 1 .708 0l1.5 1.5a.5.5 0 0 1 0 .708l-8.5 8.5a.5.5 0 0 1-.15.1l-3.5 1a.5.5 0 0 1-.607-.607l1-3.5a.5.5 0 0 1 .1-.15l8.5-8.5zM14.5 4a.5.5 0 0 0-.354.146l-1.5 1.5a.5.5 0 0 0 0 .708l1.5 1.5a.5.5 0 0 0 .708 0l1.5-1.5a.5.5 0 0 0 0-.708l-1.5-1.5A.5.5 0 0 0 14.5 4z" />
+                </svg>
+            </button>
+
+            <button [disabled]="!selectedPerson" type="button" class="excluir" (click)="delete()">
+                Excluir
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-trash"
+                    viewBox="0 0 16 16">
+                    <path
+                        d="M5.5 1a.5.5 0 0 1 .5.5V2h5V1.5a.5.5 0 0 1 1 0V2h1a1 1 0 0 1 1 1v1h-1v11a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4H0V3a1 1 0 0 1 1-1h1V1.5a.5.5 0 0 1 .5-.5zM2 4v11h12V4H2z" />
+                </svg>
+            </button>
+
+            <button type="submit" class="search">
+                Pesquisar
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                    <path
+                        d="M10.5 4a6.5 6.5 0 1 1-6.5 6.5A6.507 6.507 0 0 1 10.5 4zm0 11a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9z"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M15.5 15.5l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </button>
+        </div>
+    </form>
+</section>
