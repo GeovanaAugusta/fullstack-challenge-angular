@@ -25,6 +25,8 @@ export class WeightCalculatorComponent {
 
   selectedPerson: boolean = false;
 
+  formattedBornDate: string = '';
+
   constructor(private fb: FormBuilder) {
     this.personForm = this.fb.group({
       name: ['', Validators.required],
@@ -59,6 +61,44 @@ export class WeightCalculatorComponent {
       this.personForm.controls['document'].setValue(this.personData.document, { emitEvent: false });
     }
   }
+
+  formatDate(event: Event) {
+    const input = event.target as HTMLInputElement;
+    let value = input.value.replace(/\D/g, ''); 
+    if (value.length > 8) value = value.substring(0, 8); 
+    if (value.length > 4) {
+      value = value.replace(/(\d{2})(\d{2})(\d{0,4})/, '$1/$2/$3');
+    } else if (value.length > 2) {
+      value = value.replace(/(\d{2})(\d{0,2})/, '$1/$2');
+    }
+
+    input.value = value;
+    this.personData.born = value;
+    this.personForm.controls['born'].setValue(this.personData.born, { emitEvent: false });
+    this.personForm.controls['born'].markAsTouched();
+  }
+
+  dateValidator() {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const value = control.value.replace(/\D/g, '');
+      const isValid = value.length === 8 && this.isDateValid(value);
+      return isValid ? null : { 'invalidDate': true };
+    };
+  }
+
+  isDateValid(value: string): boolean {
+    const day = parseInt(value.substring(0, 2), 10);
+    const month = parseInt(value.substring(2, 4), 10);
+    const year = parseInt(value.substring(4, 8), 10);
+
+    if (month < 1 || month > 12) return false;
+
+    const daysInMonth = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    if (day < 1 || day > daysInMonth[month - 1]) return false;
+
+    return true;
+  }
+
 
   search(form: NgForm) {
     console.log(form.control.value, this.personForm.value);
