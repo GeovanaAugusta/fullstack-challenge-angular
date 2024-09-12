@@ -17,8 +17,8 @@ import { Person } from '../../utils/interface';
 export class WeightCalculatorComponent implements OnInit {
   personForm: FormGroup;
   selectedPerson: boolean = false;
-  selectedPersonId?: number;
-  availablePeople:Person[] = people
+  selectedPersonId: number | undefined;
+  availablePeople: Person[] = people
 
   constructor(private fb: FormBuilder, private pessoaService: PersonService) {
     this.personForm = this.fb.group({
@@ -49,6 +49,14 @@ export class WeightCalculatorComponent implements OnInit {
     value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
     input.value = value;
     this.personForm.controls['document'].setValue(value);
+  }
+
+  formatHTMLCPF(cpf: string): string {
+    return cpf
+      .replace(/\D+/g, '')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
   }
 
   formatDate(event: Event) {
@@ -107,7 +115,32 @@ export class WeightCalculatorComponent implements OnInit {
   selectPerson(person: Person) {
     this.selectedPersonId = person.id;
     console.log(this.selectedPersonId);
+
+    this.personForm.patchValue({
+      name: person.nome,
+      born: person.data_nasc.split('-').reverse().join('/'),
+      document: person.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4'),
+      gender: person.sexo,
+      height: person.altura,
+      weight: person.peso
+    });
+
+    this.update();
   }
+
+  deselectPerson() {
+    this.selectedPersonId = undefined;
+    this.personForm.reset({
+      name: '',
+      born: '',
+      document: '',
+      gender: 'M', 
+      height: null,
+      weight: null
+    });
+    console.log('Pessoa desmarcada');
+  }
+
 
   search() {
     if (this.personForm.get('document')?.valid) {
@@ -146,21 +179,27 @@ export class WeightCalculatorComponent implements OnInit {
   }
 
   update() {
-    if (this.personForm.valid && this.selectedPersonId) {
+    if (this.selectedPersonId && this.personForm.valid) {
+      const formValue = this.personForm.value;
       const payload = {
-        nome: this.personForm.value.name,
-        data_nasc: this.personForm.value.born.split('/').reverse().join('/'),
-        cpf: this.personForm.value.document.replace(/\D/g, ''),
-        sexo: this.personForm.value.gender,
-        altura: Number(this.personForm.value.height),
-        peso: Number(this.personForm.value.weight)
+        nome: formValue.name,
+        data_nasc: formValue.born.split('/').reverse().join('/'),
+        cpf: formValue.document.replace(/\D/g, ''),
+        sexo: formValue.gender,
+        altura: Number(formValue.height),
+        peso: Number(formValue.weight)
       };
 
       this.pessoaService.updatePerson(payload, this.selectedPersonId).subscribe({
-        next: (response) => console.log(response),
-        error: (err) => console.error(err)
+        next: (response) => {
+          console.log(response);
+        },
+        error: (err) => {
+          console.error(err);
+        }
       });
     } else {
+      console.log('Formulário inválido ou nenhuma pessoa selecionada');
     }
   }
 
