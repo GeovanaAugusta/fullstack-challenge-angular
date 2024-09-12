@@ -1,76 +1,73 @@
 <section class="flex-center-column">
-    <form #personForm="ngForm" (ngSubmit)="search(personForm)">
+    <form [formGroup]="personForm" (ngSubmit)="search()">
         <fieldset>
             <legend id="form-title" class="form-title">Calculadora de Peso Ideal</legend>
-
             <hr class="custom-hr" />
 
             <div class="form-row">
                 <div class="form-group"
-                    [ngClass]="{'error': !personForm.controls['name']?.valid && personForm.controls['name']?.touched}">
+                    [ngClass]="{'error': personForm.get('name')?.invalid && personForm.get('name')?.touched}">
                     <label for="name">Nome:</label>
-                    <input placeholder="Preencha com seu nome" type="text" id="name" name="name"
-                        [(ngModel)]="personData.name" required #name="ngModel" aria-required="true" />
-                    <div *ngIf="!name.valid && name.touched" class="error-message">
-                        {{messageError}}
+                    <input placeholder="Preencha com seu nome" type="text" id="name" formControlName="name" />
+                    <div *ngIf="personForm.get('name')?.invalid && personForm.get('name')?.touched"
+                        class="error-message">
+                        {{ getErrorMessage('name') }}
                     </div>
                 </div>
 
                 <div class="form-group"
-                    [ngClass]="{'error': !personForm.controls['born']?.valid && personForm.controls['born']?.touched}">
+                    [ngClass]="{'error': personForm.get('born')?.invalid && personForm.get('born')?.touched}">
                     <label for="born">Data de Nascimento:</label>
-                    <input placeholder="dd/mm/aaaa" type="text" id="born" name="born" [(ngModel)]="personData.born"
-                        required #born="ngModel" aria-required="true" (input)="formatDate($event)" maxlength="10" />
-                    <div *ngIf="!personForm.controls['born']?.valid && personForm.controls['born']?.touched"
+                    <input placeholder="dd/mm/aaaa" type="text" id="born" formControlName="born"
+                        (input)="formatDate($event)" maxlength="10" />
+                    <div *ngIf="personForm.get('born')?.invalid && personForm.get('born')?.touched"
                         class="error-message">
-                        {{ messageError }}
+                        {{ getErrorMessage('born') }}
                     </div>
                 </div>
-
             </div>
 
             <div class="form-row">
-                <div class="form-group" [ngClass]="{'error': !document.valid && document.touched}">
+                <div class="form-group"
+                    [ngClass]="{'error': personForm.get('document')?.invalid && personForm.get('document')?.touched}">
                     <label for="document">CPF:</label>
-                    <input type="text" id="document" name="document" [(ngModel)]="personData.document" required
-                        #document="ngModel" aria-required="true" (input)="formatCPF($event)" maxlength="14"
-                        minlength="14" />
-                    <div *ngIf="!document.valid && document.touched" class="error-message">
-                        {{ messageError }}
+                    <input type="text" id="document" formControlName="document" (input)="formatCPF($event)"
+                        maxlength="14" minlength="14" />
+                    <div *ngIf="personForm.get('document')?.invalid && personForm.get('document')?.touched"
+                        class="error-message">
+                        {{ getErrorMessage('document') }}
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="gender">Sexo:</label>
-                    <select [ngClass]="{'error': !gender.valid && gender.touched}" id="gender" name="gender"
-                        [(ngModel)]="personData.gender" #gender="ngModel">
+                    <select id="gender" formControlName="gender">
                         <option value="M">Masculino</option>
                         <option value="F">Feminino</option>
                     </select>
-                    <div *ngIf="!gender.valid && gender.touched" class="error-message">
-                        {{messageError}}
-                    </div>
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group"
-                    [ngClass]="{'error': !personForm.controls['height']?.valid && personForm.controls['height']?.touched}">
+                    [ngClass]="{'error': personForm.get('height')?.invalid && personForm.get('height')?.touched}">
                     <label for="height">Altura(m):</label>
-                    <input type="number" id="height" name="height" [(ngModel)]="personData.height" required
-                        #height="ngModel" aria-required="true" />
-                    <div *ngIf="!height.valid && height.touched" class="error-message">
-                        {{messageError}}
+                    <input type="text"  id="height" (input)="convertCommaToDot($event, 'height')"
+                        formControlName="height" />
+                    <div *ngIf="personForm.get('height')?.invalid && personForm.get('height')?.touched"
+                        class="error-message">
+                        {{ getErrorMessage('height') }}
                     </div>
                 </div>
 
                 <div class="form-group"
-                    [ngClass]="{'error': !personForm.controls['weight']?.valid && personForm.controls['weight']?.touched}">
+                    [ngClass]="{'error': personForm.get('weight')?.invalid && personForm.get('weight')?.touched}">
                     <label for="weight">Peso(Kg):</label>
-                    <input type="number" id="weight" name="weight" [(ngModel)]="personData.weight" required
-                        #weight="ngModel" aria-required="true" />
-                    <div *ngIf="!weight.valid && weight.touched" class="error-message">
-                        {{messageError}}
+                    <input type="text"  id="weight" (input)="convertCommaToDot($event, 'weight')"
+                        formControlName="weight" />
+                    <div *ngIf="personForm.get('weight')?.invalid && personForm.get('weight')?.touched"
+                        class="error-message">
+                        {{ getErrorMessage('weight') }}
                     </div>
                 </div>
             </div>
