@@ -16,9 +16,14 @@ import { Person } from '../../utils/interface';
 })
 export class WeightCalculatorComponent implements OnInit {
   personForm: FormGroup;
+
   selectedPerson: boolean = false;
+
   selectedPersonId: number | undefined;
-  availablePeople: Person[] = people
+
+  availablePeople: Person[] = [];
+
+  showPeople = true;
 
   constructor(private fb: FormBuilder, private pessoaService: PersonService) {
     this.personForm = this.fb.group({
@@ -32,14 +37,6 @@ export class WeightCalculatorComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.pessoaService.allPeople().subscribe({
-      next: (response) => console.log(response),
-      error: (err) => console.error('Erro ao adicionar pessoa:', err)
-    });
-
-    console.log(this.availablePeople);
-
-
   }
 
   formatCPF(event: Event) {
@@ -130,24 +127,35 @@ export class WeightCalculatorComponent implements OnInit {
 
   deselectPerson() {
     this.selectedPersonId = undefined;
+    this.resetForm();
+  }
+
+  toggleVisibility() {
+    this.showPeople = !this.showPeople;
+    this.deselectPerson();
+    this.availablePeople = [];
+  }
+
+  resetForm() {
     this.personForm.reset({
       name: '',
       born: '',
       document: '',
-      gender: 'M', 
+      gender: 'M',
       height: null,
       weight: null
     });
-    console.log('Pessoa desmarcada');
   }
 
-
   search() {
+
+    this.showPeople = true;
+
     if (this.personForm.get('document')?.valid) {
       const cpf = this.personForm.get('document')?.value.replace(/\D/g, '');
       this.pessoaService.searchPerson(cpf).subscribe({
         next: (data) => {
-          console.log('Pessoa encontrada:', data);
+          console.log(data);
           this.selectedPerson = true;
           this.selectedPersonId = data.id;
         },
@@ -155,6 +163,14 @@ export class WeightCalculatorComponent implements OnInit {
       });
     } else {
       console.log(this.personForm.value);
+      this.pessoaService.allPeople().subscribe({
+        next: (response) => console.log(response),
+        error: (err) => console.error(err)
+      });
+
+      this.availablePeople = people;
+
+      console.log(this.availablePeople);
     }
   }
 
@@ -191,15 +207,14 @@ export class WeightCalculatorComponent implements OnInit {
       };
 
       this.pessoaService.updatePerson(payload, this.selectedPersonId).subscribe({
-        next: (response) => {
-          console.log(response);
+        next: () => {
+          this.resetForm();
         },
         error: (err) => {
           console.error(err);
         }
       });
     } else {
-      console.log('Formulário inválido ou nenhuma pessoa selecionada');
     }
   }
 
@@ -209,7 +224,7 @@ export class WeightCalculatorComponent implements OnInit {
         next: (response) => {
           this.selectedPerson = false;
           this.selectedPersonId = undefined;
-          this.personForm.reset();
+          this.resetForm();
         },
         error: (err) => console.error(err)
       });
