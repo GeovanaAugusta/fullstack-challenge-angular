@@ -74,14 +74,14 @@
         </fieldset>
 
         <div class="button-group">
-            <button type="button" class="add" (click)="add()">
+            <button type="button" class="add" (click)="add()" [disabled]="selectedPersonId">
                 Incluir
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                     <path d="M12 5v14m7-7H5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round" />
                 </svg>
             </button>
-            <button [disabled]="!selectedPerson" type="button" class="update" (click)="update()">
+            <button [disabled]="!selectedPersonId" type="button" class="update" (click)="update()">
                 Alterar
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil"
                     viewBox="0 0 16 16">
@@ -90,7 +90,7 @@
                 </svg>
             </button>
 
-            <button [disabled]="!selectedPerson" type="button" class="delete" (click)="delete()">
+            <button [disabled]="!selectedPersonId" type="button" class="delete" (click)="delete()">
                 Excluir
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-trash"
                     viewBox="0 0 16 16">
@@ -115,13 +115,21 @@
 </section>
 
 <section *ngIf="availablePeople && availablePeople.length > 0" class="people-list">
+    <button *ngIf="selectedPersonId" type="button" class="remove-selection" (click)="deselectPerson()">
+        Remover seleção
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+            <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+        </svg>
+    </button>
     <legend id="form-title" class="form-title">Usuários</legend>
-    <hr class="custom-hr" style="width: 10%;"/>
+    <hr class="custom-hr" style="width: 10%;" />
     <div class="person-grid">
-        <div class="person-card" *ngFor="let person of availablePeople" (click)="selectPerson(person)">
+        <div class="person-card" *ngFor="let person of availablePeople" (click)="selectPerson(person)"
+            [ngClass]="{'selected': person.id === selectedPersonId}">
             <div class="person-header">
                 <h3>{{ person.nome }}</h3>
-                <p class="cpf">{{ person.cpf }}</p>
+                <p class="cpf">{{ formatHTMLCPF(person.cpf) }}</p>
             </div>
             <div class="person-details">
                 <p><strong>Data de Nascimento:</strong> {{ person.data_nasc | date:'dd/MM/yyyy' }}</p>
