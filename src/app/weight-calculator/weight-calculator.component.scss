@@ -3,7 +3,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
     padding: 20px;
 }
 
@@ -104,13 +103,71 @@
 }
 
 .custom-hr {
-    border: 0; 
-    height: 4px; 
-    background-color: #5b5656; 
+    border: 0;
+    height: 4px;
+    background-color: #5b5656;
     margin-bottom: 20px;
     margin-top: 5px;
-  }
-  
+}
+
+.people-list {
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 10px;
+    width: 80%;
+    margin: auto;
+}
+
+.people-list h2 {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+}
+
+.person-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.person-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.person-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+}
+
+.person-header {
+    margin-bottom: 10px;
+}
+
+.person-header h3 {
+    margin: 0;
+    font-size: 1.4rem;
+    color: #333;
+}
+
+.person-header .cpf {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.person-details p {
+    margin: 5px 0;
+    font-size: 0.95rem;
+    color: #333;
+}
+
+.person-details strong {
+    color: #555;
+}
 
 form select.error {
     border-color: red;
