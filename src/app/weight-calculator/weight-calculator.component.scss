@@ -61,6 +61,11 @@
     cursor: not-allowed;
 }
 
+.button-group button.add:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
 .button-group button.delete:disabled {
     background-color: #ccc;
     cursor: not-allowed;
@@ -168,6 +173,31 @@
 .person-details strong {
     color: #555;
 }
+
+.person-card.selected {
+    border: 2px solid #4F372F;
+    background-color: #f9f9f9;
+}
+
+.remove-selection {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    color: #ff0000;
+    font-size: 18px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+.remove-selection svg {
+    vertical-align: middle;
+}
+
 
 form select.error {
     border-color: red;
