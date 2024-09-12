@@ -52,7 +52,7 @@
                 <div class="form-group"
                     [ngClass]="{'error': personForm.get('height')?.invalid && personForm.get('height')?.touched}">
                     <label for="height">Altura(m):</label>
-                    <input type="text"  id="height" (input)="convertCommaToDot($event, 'height')"
+                    <input type="text" id="height" (input)="convertCommaToDot($event, 'height')"
                         formControlName="height" />
                     <div *ngIf="personForm.get('height')?.invalid && personForm.get('height')?.touched"
                         class="error-message">
@@ -63,7 +63,7 @@
                 <div class="form-group"
                     [ngClass]="{'error': personForm.get('weight')?.invalid && personForm.get('weight')?.touched}">
                     <label for="weight">Peso(Kg):</label>
-                    <input type="text"  id="weight" (input)="convertCommaToDot($event, 'weight')"
+                    <input type="text" id="weight" (input)="convertCommaToDot($event, 'weight')"
                         formControlName="weight" />
                     <div *ngIf="personForm.get('weight')?.invalid && personForm.get('weight')?.touched"
                         class="error-message">
@@ -109,6 +109,7 @@
                         stroke-linejoin="round" />
                 </svg>
             </button>
+            <button *ngIf="selectedPerson">Peso Ideal</button>
         </div>
     </form>
 </section>

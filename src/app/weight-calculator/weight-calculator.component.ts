@@ -111,6 +111,7 @@ export class WeightCalculatorComponent {
       console.log('Formulário inválido', this.personForm.value);
     }
   }
+  
   update() {
   }
 
