@@ -1,88 +1,57 @@
 import { Component } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, FormsModule, NgForm, ValidatorFn, Validators } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidatorFn, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { cpfValidator } from '../../utils/cpf-validator';
+import { BrowserModule } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-weight-calculator',
-  standalone: true,
-  imports: [FormsModule, CommonModule],
   templateUrl: './weight-calculator.component.html',
-  styleUrls: ['./weight-calculator.component.scss']
+  styleUrls: ['./weight-calculator.component.scss'],
+  standalone: true,
+  imports: [FormsModule, CommonModule, ReactiveFormsModule],
 })
 export class WeightCalculatorComponent {
   personForm: FormGroup;
-  personData = {
-    name: '',
-    born: '',
-    document: '',
-    gender: 'M',
-    height: null,
-    weight: null
-  };
-
-  messageError: string = 'O campo é obrigatório';
-
   selectedPerson: boolean = false;
-
-  formattedBornDate: string = '';
 
   constructor(private fb: FormBuilder) {
     this.personForm = this.fb.group({
-      name: ['', Validators.required],
-      born: ['', Validators.required],
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      born: ['', [Validators.required, this.dateValidator()]],
       document: ['', [Validators.required, cpfValidator()]],
       gender: ['M'],
-      height: [null],
-      weight: [null]
+      height: [null, [Validators.required, Validators.min(0.5), Validators.max(2.5)]],
+      weight: [null, [Validators.required, Validators.min(30), Validators.max(300)]]
     });
-
-    console.log(cpfValidator());
-
   }
 
   formatCPF(event: Event) {
     const input = event.target as HTMLInputElement;
-    if (input) {
-      let value = input.value.replace(/\D/g, '');
+    let value = input.value.replace(/\D/g, '');
 
-      if (value.length > 11) value = value.substring(0, 11);
+    if (value.length > 11) value = value.substring(0, 11);
 
-      if (value.length > 6) {
-        value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
-      } else if (value.length > 3) {
-        value = value.replace(/(\d{3})(\d{3})(\d{1,2})/, '$1.$2-$3');
-      } else {
-        value = value.replace(/(\d{3})(\d{1,2})/, '$1-$2');
-      }
-
-      input.value = value;
-      this.personData.document = value;
-      this.personForm.controls['document'].setValue(this.personData.document, { emitEvent: false });
-    }
+    value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+    input.value = value;
+    this.personForm.controls['document'].setValue(value);
   }
 
   formatDate(event: Event) {
     const input = event.target as HTMLInputElement;
-    let value = input.value.replace(/\D/g, ''); 
-    if (value.length > 8) value = value.substring(0, 8); 
-    if (value.length > 4) {
-      value = value.replace(/(\d{2})(\d{2})(\d{0,4})/, '$1/$2/$3');
-    } else if (value.length > 2) {
-      value = value.replace(/(\d{2})(\d{0,2})/, '$1/$2');
-    }
+    let value = input.value.replace(/\D/g, '');
 
+    if (value.length > 8) value = value.substring(0, 8);
+
+    value = value.replace(/(\d{2})(\d{2})(\d{0,4})/, '$1/$2/$3');
     input.value = value;
-    this.personData.born = value;
-    this.personForm.controls['born'].setValue(this.personData.born, { emitEvent: false });
-    this.personForm.controls['born'].markAsTouched();
+    this.personForm.controls['born'].setValue(value);
   }
 
-  dateValidator() {
-    return (control: AbstractControl): { [key: string]: any } | null => {
+  dateValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: boolean } | null => {
       const value = control.value.replace(/\D/g, '');
-      const isValid = value.length === 8 && this.isDateValid(value);
-      return isValid ? null : { 'invalidDate': true };
+      return value.length === 8 && this.isDateValid(value) ? null : { 'invalidDate': true };
     };
   }
 
@@ -90,39 +59,60 @@ export class WeightCalculatorComponent {
     const day = parseInt(value.substring(0, 2), 10);
     const month = parseInt(value.substring(2, 4), 10);
     const year = parseInt(value.substring(4, 8), 10);
-
-    if (month < 1 || month > 12) return false;
-
-    const daysInMonth = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-    if (day < 1 || day > daysInMonth[month - 1]) return false;
-
-    return true;
+    return day > 0 && day <= 31 && month > 0 && month <= 12 && year > 1900;
   }
 
+  getErrorMessage(controlName: string): string {
+    const control = this.personForm.get(controlName);
+    if (control?.hasError('required')) {
+      return 'O campo é obrigatório';
+    } else if (control?.hasError('minlength')) {
+      return 'Campo inválido';
+    } else if (control?.hasError('invalidDate')) {
+      return 'Data inválida';
+    } else if (control?.hasError('cpf')) {
+      return 'CPF inválido';
+    }
+    return '';
+  }
 
-  search(form: NgForm) {
-    console.log(form.control.value, this.personForm.value);
-    this.personForm.markAllAsTouched();
-    form.control.markAllAsTouched();
-    if (form.valid && this.personForm.valid) {
-      this.selectedPerson = true;
+  convertCommaToDot(event: Event, controlName: string) {
+    const input = event.target as HTMLInputElement;
+    let value = input.value;
+
+    value = value.replace(',', '.');
+
+    this.personForm.controls[controlName].setValue(value);
+  }
+
+  prepareFormValues() {
+    let height = this.personForm.controls['height'].value;
+    let weight = this.personForm.controls['weight'].value;
+
+    height = height ? height.replace(',', '.') : height;
+    weight = weight ? weight.replace(',', '.') : weight;
+
+    this.personForm.controls['height'].setValue(height);
+    this.personForm.controls['weight'].setValue(weight);
+  }
+
+  search() {
+    if (this.personForm.valid) {
+      console.log('Formulário válido', this.personForm.value);
     } else {
-      // api
-      console.log(this.personForm.value);
-
+      console.log('Formulário inválido', this.personForm.value);
     }
   }
 
   add() {
+    // Lógica de adicionar
   }
 
   update() {
-    if (this.selectedPerson) {
-    }
+    // Lógica de atualizar
   }
 
   delete() {
-    if (this.selectedPerson) {
-    }
+    // Lógica de excluir
   }
 }
