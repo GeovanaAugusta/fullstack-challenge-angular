@@ -14,6 +14,10 @@ export class PersonService {
         return this.http.get<any>(`${this.apiUrl}/pessoas/${cpf}`);
     }
 
+    allPeople(): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/pessoas`);
+    }
+
     addPerson(person: any): Observable<any> {
         return this.http.post<any>(`${this.apiUrl}/pessoas`, person);
     }
