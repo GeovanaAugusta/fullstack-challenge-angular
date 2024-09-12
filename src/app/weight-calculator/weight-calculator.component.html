@@ -1,4 +1,4 @@
-<section class="flex-center-column">
+<section class="flex-center-column" [ngStyle]="{ 'height': availablePeople.length === 0 ? '100vh' : 'auto' }">
     <form [formGroup]="personForm" (ngSubmit)="search()">
         <fieldset>
             <legend id="form-title" class="form-title">Calculadora de Peso Ideal</legend>
@@ -32,7 +32,7 @@
                     [ngClass]="{'error': personForm.get('document')?.invalid && personForm.get('document')?.touched}">
                     <label for="document">CPF:</label>
                     <input type="text" id="document" formControlName="document" (input)="formatCPF($event)"
-                        maxlength="14" minlength="14" />
+                        maxlength="14" minlength="14" placeholder="000.000.000-00" />
                     <div *ngIf="personForm.get('document')?.invalid && personForm.get('document')?.touched"
                         class="error-message">
                         {{ getErrorMessage('document') }}
@@ -112,4 +112,23 @@
             <button *ngIf="selectedPerson">Peso Ideal</button>
         </div>
     </form>
+</section>
+
+<section *ngIf="availablePeople && availablePeople.length > 0" class="people-list">
+    <legend id="form-title" class="form-title">Usuários</legend>
+    <hr class="custom-hr" style="width: 10%;"/>
+    <div class="person-grid">
+        <div class="person-card" *ngFor="let person of availablePeople" (click)="selectPerson(person)">
+            <div class="person-header">
+                <h3>{{ person.nome }}</h3>
+                <p class="cpf">{{ person.cpf }}</p>
+            </div>
+            <div class="person-details">
+                <p><strong>Data de Nascimento:</strong> {{ person.data_nasc | date:'dd/MM/yyyy' }}</p>
+                <p><strong>Sexo:</strong> {{ person.sexo === 'M' ? 'Masculino' : 'Feminino' }}</p>
+                <p><strong>Altura:</strong> {{ person.altura }}m</p>
+                <p><strong>Peso:</strong> {{ person.peso }}kg</p>
+            </div>
+        </div>
+    </div>
 </section>
