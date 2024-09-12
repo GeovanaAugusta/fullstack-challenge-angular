@@ -70,7 +70,7 @@ export class WeightCalculatorComponent {
       return 'Campo inválido';
     } else if (control?.hasError('invalidDate')) {
       return 'Data inválida';
-    } else if (control?.hasError('cpf')) {
+    } else if (control?.hasError('cpf') || control?.hasError('invalidCPF')) {
       return 'CPF inválido';
     }
     return '';
@@ -105,14 +105,15 @@ export class WeightCalculatorComponent {
   }
 
   add() {
-    // Lógica de adicionar
+    if (this.personForm.valid) {
+      console.log('Formulário válido', this.personForm.value);
+    } else {
+      console.log('Formulário inválido', this.personForm.value);
+    }
   }
-
   update() {
-    // Lógica de atualizar
   }
 
   delete() {
-    // Lógica de excluir
   }
 }
