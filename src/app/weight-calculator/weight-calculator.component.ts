@@ -1,21 +1,26 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidatorFn, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { cpfValidator } from '../../utils/cpf-validator';
-import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
+import { PersonService } from '../service/api/weight-calculator';
+import { people } from './mock';
+import { Person } from '../../utils/interface';
 
 @Component({
   selector: 'app-weight-calculator',
   templateUrl: './weight-calculator.component.html',
   styleUrls: ['./weight-calculator.component.scss'],
   standalone: true,
-  imports: [FormsModule, CommonModule, ReactiveFormsModule],
+  imports: [FormsModule, CommonModule, ReactiveFormsModule, HttpClientModule],
 })
-export class WeightCalculatorComponent {
+export class WeightCalculatorComponent implements OnInit {
   personForm: FormGroup;
   selectedPerson: boolean = false;
+  selectedPersonId?: number;
+  availablePeople:Person[] = people
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private pessoaService: PersonService) {
     this.personForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       born: ['', [Validators.required, this.dateValidator()]],
@@ -26,12 +31,21 @@ export class WeightCalculatorComponent {
     });
   }
 
+  ngOnInit(): void {
+    this.pessoaService.allPeople().subscribe({
+      next: (response) => console.log(response),
+      error: (err) => console.error('Erro ao adicionar pessoa:', err)
+    });
+
+    console.log(this.availablePeople);
+
+
+  }
+
   formatCPF(event: Event) {
     const input = event.target as HTMLInputElement;
     let value = input.value.replace(/\D/g, '');
-
     if (value.length > 11) value = value.substring(0, 11);
-
     value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
     input.value = value;
     this.personForm.controls['document'].setValue(value);
@@ -40,9 +54,7 @@ export class WeightCalculatorComponent {
   formatDate(event: Event) {
     const input = event.target as HTMLInputElement;
     let value = input.value.replace(/\D/g, '');
-
     if (value.length > 8) value = value.substring(0, 8);
-
     value = value.replace(/(\d{2})(\d{2})(\d{0,4})/, '$1/$2/$3');
     input.value = value;
     this.personForm.controls['born'].setValue(value);
@@ -79,42 +91,90 @@ export class WeightCalculatorComponent {
   convertCommaToDot(event: Event, controlName: string) {
     const input = event.target as HTMLInputElement;
     let value = input.value;
-
     value = value.replace(',', '.');
-
     this.personForm.controls[controlName].setValue(value);
   }
 
   prepareFormValues() {
     let height = this.personForm.controls['height'].value;
     let weight = this.personForm.controls['weight'].value;
-
     height = height ? height.replace(',', '.') : height;
     weight = weight ? weight.replace(',', '.') : weight;
-
     this.personForm.controls['height'].setValue(height);
     this.personForm.controls['weight'].setValue(weight);
   }
 
+  selectPerson(person: Person) {
+    this.selectedPersonId = person.id;
+    console.log(this.selectedPersonId);
+  }
+
   search() {
-    if (this.personForm.valid) {
-      console.log('Formulário válido', this.personForm.value);
+    if (this.personForm.get('document')?.valid) {
+      const cpf = this.personForm.get('document')?.value.replace(/\D/g, '');
+      this.pessoaService.searchPerson(cpf).subscribe({
+        next: (data) => {
+          console.log('Pessoa encontrada:', data);
+          this.selectedPerson = true;
+          this.selectedPersonId = data.id;
+        },
+        error: (err) => console.error(err)
+      });
     } else {
-      console.log('Formulário inválido', this.personForm.value);
+      console.log(this.personForm.value);
     }
   }
 
   add() {
     if (this.personForm.valid) {
-      console.log('Formulário válido', this.personForm.value);
+      const payload = {
+        nome: this.personForm.value.name,
+        data_nasc: this.personForm.value.born.split('/').reverse().join('/'),
+        cpf: this.personForm.value.document.replace(/\D/g, ''),
+        sexo: this.personForm.value.gender,
+        altura: Number(this.personForm.value.height),
+        peso: Number(this.personForm.value.weight)
+      };
+
+      this.pessoaService.addPerson(payload).subscribe({
+        next: (response) => console.log(response),
+        error: (err) => console.error(err)
+      });
     } else {
-      console.log('Formulário inválido', this.personForm.value);
+      console.log(this.personForm.value);
     }
   }
-  
+
   update() {
+    if (this.personForm.valid && this.selectedPersonId) {
+      const payload = {
+        nome: this.personForm.value.name,
+        data_nasc: this.personForm.value.born.split('/').reverse().join('/'),
+        cpf: this.personForm.value.document.replace(/\D/g, ''),
+        sexo: this.personForm.value.gender,
+        altura: Number(this.personForm.value.height),
+        peso: Number(this.personForm.value.weight)
+      };
+
+      this.pessoaService.updatePerson(payload, this.selectedPersonId).subscribe({
+        next: (response) => console.log(response),
+        error: (err) => console.error(err)
+      });
+    } else {
+    }
   }
 
   delete() {
+    if (this.selectedPersonId) {
+      this.pessoaService.deletePerson(this.selectedPersonId).subscribe({
+        next: (response) => {
+          this.selectedPerson = false;
+          this.selectedPersonId = undefined;
+          this.personForm.reset();
+        },
+        error: (err) => console.error(err)
+      });
+    } else {
+    }
   }
 }
