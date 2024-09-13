@@ -1,27 +1,58 @@
-# FullstackChallengeAngular
+# Fullstack Challenge Angular
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.1.0.
+Este é um projeto fullstack criado como parte de um desafio de desenvolvimento. A aplicação envolve um frontend desenvolvido em Angular que se comunica com um backend Django para realizar operações CRUD (Criar, Ler, Atualizar, Excluir) sobre uma entidade chamada `Pessoa`. O projeto também inclui uma funcionalidade extra para calcular o peso ideal de uma pessoa com base na altura.
 
-## Development server
+## Estrutura do Projeto
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- **Frontend:** Angular 17.x
 
-## Code scaffolding
+## Funcionalidades
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+A aplicação permite:
+1. **Incluir**: Adicionar novas pessoas ao sistema.
+2. **Alterar**: Atualizar as informações de uma pessoa existente.
+3. **Excluir**: Remover pessoas cadastradas.
+4. **Pesquisar**: Buscar por pessoas já cadastradas.
+5. **Calcular Peso Ideal**: Baseado na fórmula do peso ideal para homens e mulheres.
 
-## Build
+### Fórmula do Peso Ideal:
+- Para homens: `(72,7 * altura) - 58`
+- Para mulheres: `(62,1 * altura) - 44,7`
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Instalação
 
-## Running unit tests
+Siga as etapas abaixo para configurar e rodar a aplicação localmente:
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+1. Clone o repositório:
+    ```bash
+    git clone <git@github.com:GeovanaAugusta/fullstack-challenge-angular.git>
+    cd fullstack-challenge-angular
+    ```
 
-## Running end-to-end tests
+2. Instale as dependências:
+    ```bash
+    npm install
+    ```
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+3. Execute o servidor de desenvolvimento Angular:
+    ```bash
+    npm start
+    ```
 
-## Further help
+   O frontend estará acessível em `http://localhost:4200`.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+4. Certifique-se de que o backend Django está rodando na porta 8000. O frontend se comunicará com o backend através de um proxy configurado em `proxy.conf.json`.
+
+## Arquivo de Proxy
+
+A comunicação entre o frontend e o backend é realizada via proxy. O arquivo `proxy.conf.json` está configurado como abaixo:
+
+```json
+{
+    "/api/": {
+      "target": "http://localhost:8000",
+      "secure": false,
+      "changeOrigin": true,
+      "logLevel": "debug"
+    }
+}

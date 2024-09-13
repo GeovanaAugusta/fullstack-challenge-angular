@@ -32,7 +32,7 @@ export class PersonService {
     }
 
     calculateWeight(cpf: string): Observable<any> {
-        return this.http.delete<any>(`${this.apiUrl}/peso-ideal-por-cpf/?cpf=/${cpf}/`);
+        return this.http.get<any>(`${this.apiUrl}/pessoas/peso-ideal-por-cpf/?cpf=${cpf}`);
     }
 }
 
