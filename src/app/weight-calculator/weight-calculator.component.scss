@@ -1,0 +1,389 @@
+.flex-center-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+@media screen and (max-width: 600px) {
+    .flex {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+}
+
+.form-title {
+    font-weight: 600;
+    font-size: 24px;
+    color: #5b5656;
+    margin-bottom: 0px;
+    text-align: center;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.button-group button {
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.button-group button:hover {
+    background-color: #7b1f8b;
+}
+
+.button-group button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.button-group button.add {
+    background-color: #28a745;
+}
+
+.button-group button.update {
+    background-color: #ffc107;
+}
+
+.button-group button.delete {
+    background-color: #dc3545;
+}
+
+.button-group button.update:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.button-group button.add:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.button-group button.delete:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.button-group button.search {
+    background-color: #6c757d;
+}
+
+.button-group button.weight {
+    background-color: #7b1f8b;
+}
+
+.button-group svg {
+    fill: currentColor;
+    width: 20px;
+    height: 20px;
+}
+
+.error-message {
+    color: red;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+}
+
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.form-group {
+    flex: 1;
+    margin-right: 16px;
+}
+
+.form-group:last-child {
+    margin-right: 0;
+}
+
+.error input,
+.error select {
+    border-color: red;
+}
+
+.custom-hr {
+    border: 0;
+    height: 4px;
+    background-color: #5b5656;
+    margin-bottom: 20px;
+    margin-top: 5px;
+}
+
+.people-list {
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 10px;
+    width: 80%;
+    margin: auto;
+}
+
+.people-list h2 {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+}
+
+.person-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.person-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.person-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+}
+
+.person-header {
+    margin-bottom: 10px;
+}
+
+.person-header h3 {
+    margin: 0;
+    font-size: 1.4rem;
+    color: #333;
+}
+
+.person-header .cpf {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.person-details p {
+    margin: 5px 0;
+    font-size: 0.95rem;
+    color: #333;
+}
+
+.person-details strong {
+    color: #555;
+}
+
+.person-card.selected {
+    border: 2px solid #4F372F;
+    background-color: #f9f9f9;
+}
+
+.remove-selection {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    color: #ff0000;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.remove-selection svg {
+    vertical-align: middle;
+}
+
+.hide-users {
+    background-color: #f0f0f0;
+    color: #333;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 700;
+    transition: background-color 0.3s, color 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.hide-users svg {
+    fill: currentColor;
+    width: 24px;
+    height: 24px;
+}
+
+.hide-users:hover {
+    background-color: #e0e0e0;
+    color: #000;
+}
+
+.hide-users:focus {
+    outline: none;
+}
+
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.popup-content {
+    padding: 25px;
+    border-radius: 5px;
+    text-align: center;
+    max-width: 290px;
+    width: 100%;
+    color: white;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 0px;
+}
+
+.popup-success {
+    background-color: #4CAF50;
+}
+
+.popup-warning {
+    background-color: #FFC107;
+}
+
+.popup-error {
+    background-color: #F44336;
+}
+
+.popup-weight {
+    background-color: #8d29ac;
+}
+
+form select.error {
+    border-color: red;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #EEEEEE;
+    margin: 0;
+    padding: 0;
+}
+
+form {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 700px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+legend {
+    font-size: 22px;
+    color: #8d29ac;
+    margin-bottom: 15px;
+}
+
+form label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 600;
+    color: #555;
+}
+
+form input,
+form select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+form input:focus,
+form select:focus {
+    border-color: #4a90e2;
+    outline: none;
+    box-shadow: 0 0 4px rgba(74, 144, 226, 0.3);
+}
+
+button {
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button.add {
+    background-color: #4CAF50;
+}
+
+button.update {
+    background-color: #FFC107;
+}
+
+button.delete {
+    background-color: #F44336;
+}
+
+button.delete .bi-trash {
+    width: 13px;
+    height: 13px;
+}
+
+button.pesquisar {
+    background-color: #2196F3;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
