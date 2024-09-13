@@ -109,13 +109,12 @@
                         stroke-linejoin="round" />
                 </svg>
             </button>
-            <button *ngIf="selectedPerson">Peso Ideal</button>
+            <button class="weight" type="button" *ngIf="selectedPersonId" (click)="calculateWeight()">Peso Ideal</button>
         </div>
     </form>
 </section>
 
 <section *ngIf="showPeople && availablePeople && availablePeople.length > 0" class="people-list">
-
     <div class="flex">
         <button type="button" class="hide-users" (click)="toggleVisibility()">
             Ocultar pessoas

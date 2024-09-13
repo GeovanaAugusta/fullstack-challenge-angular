@@ -91,6 +91,10 @@
     background-color: #6c757d;
 }
 
+.button-group button.weight {
+    background-color: #7b1f8b;
+}
+
 .button-group svg {
     fill: currentColor;
     width: 20px;
@@ -280,6 +284,10 @@
 
 .popup-error {
     background-color: #F44336;
+}
+
+.popup-weight {
+    background-color: #8d29ac;
 }
 
 form select.error {

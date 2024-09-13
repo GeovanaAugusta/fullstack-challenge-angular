@@ -20,6 +20,16 @@ export class WeightCalculatorComponent implements OnInit {
 
   selectedPersonId: number | undefined;
 
+  person: Person = {
+    id: 0,
+    nome: '',
+    data_nasc: '',
+    cpf: '',
+    sexo: 'M',
+    altura: 0,
+    peso: 0
+  };
+
   availablePeople: Person[] = [];
 
   showPeople = true;
@@ -116,7 +126,7 @@ export class WeightCalculatorComponent implements OnInit {
 
   selectPerson(person: Person) {
     this.selectedPersonId = person.id;
-    console.log(this.selectedPersonId);
+    this.person = person;
 
     this.personForm.patchValue({
       name: person.nome,
@@ -155,7 +165,12 @@ export class WeightCalculatorComponent implements OnInit {
     this.popupMessage = message;
     this.popupClass = `popup-${type}`;
     this.showPopup = true;
-    setTimeout(() => this.closePopup(), 1000);
+
+    if (type !== 'weight') {
+      setTimeout(() => this.closePopup(), 1000);
+    } else {
+      setTimeout(() => this.closePopup(), 5000);
+    }
   }
 
   closePopup() {
@@ -187,7 +202,6 @@ export class WeightCalculatorComponent implements OnInit {
       this.pessoaService.allPeople().subscribe({
         next: (response) => {
           this.availablePeople = response;
-          this.availablePeople = response;
           if (this.availablePeople.length > 0) {
             this.showNotification('Usuários carregados com sucesso!', 'success');
           } else {
@@ -216,10 +230,11 @@ export class WeightCalculatorComponent implements OnInit {
       };
 
       this.pessoaService.addPerson(payload).subscribe({
-        next: (response) => {
+        next: () => {
           this.showNotification('Pessoa adicionada com sucesso.', 'success');
           this.deselectPerson();
           this.showPeople = false;
+          this.availablePeople = [];
         },
         error: (err) => {
           console.error(err);
@@ -244,10 +259,11 @@ export class WeightCalculatorComponent implements OnInit {
       };
 
       this.pessoaService.updatePerson(payload, this.selectedPersonId).subscribe({
-        next: (response) => {
+        next: () => {
           this.showNotification('Pessoa atualizada com sucesso!', 'success');
           this.deselectPerson();
           this.showPeople = false;
+          this.availablePeople = [];
         },
         error: (err) => {
           console.error(err);
@@ -264,6 +280,7 @@ export class WeightCalculatorComponent implements OnInit {
           this.showNotification('Pessoa excluída com sucesso!', 'success');
           this.deselectPerson();
           this.showPeople = false;
+          this.availablePeople = [];
         },
         error: (err) => {
           console.error(err);
@@ -274,15 +291,14 @@ export class WeightCalculatorComponent implements OnInit {
   }
 
 
-  calculateWeight(gender: string, cpf: string) {
+  calculateWeight() {
     if (this.selectedPersonId) {
-      this.pessoaService.calculateWeight(cpf).subscribe({
+      this.pessoaService.calculateWeight(this.person.cpf).subscribe({
         next: (response) => {
-          this.showNotification(`
-            FÓRMULA DO PESO IDEAL:
-            ${gender === 'M' ? `( 72,7 * altura ) - 58 = ${response}` : ` • para mulheres = ( 62,1 * altura ) - 44,7 = ${response}`} `, 'weight');
+          this.showNotification(`PESO IDEAL: ${response.peso_ideal.toFixed(2)} Kg`, 'weight');
           this.deselectPerson();
           this.showPeople = false;
+          this.availablePeople = [];
         },
         error: (err) => {
           console.error(err);
