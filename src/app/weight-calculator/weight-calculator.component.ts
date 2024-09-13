@@ -195,7 +195,7 @@ export class WeightCalculatorComponent implements OnInit {
         },
         error: (err) => {
           console.error(err);
-          this.showNotification('Ocorreu um erro.', 'error');
+          this.showNotification('Nenhuma pessoa foi encontrada!', 'error');
         }
       });
     } else {
