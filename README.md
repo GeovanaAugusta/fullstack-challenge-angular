@@ -1,4 +1,4 @@
-# Fullstack Challenge Angular - Athenas
+# Fullstack Challenge Angular
 
 Este é um projeto fullstack criado como parte de um desafio de desenvolvimento. A aplicação envolve um frontend desenvolvido em Angular que se comunica com um backend Django para realizar operações CRUD (Criar, Ler, Atualizar, Excluir) sobre uma entidade chamada `Pessoa`. O projeto também inclui uma funcionalidade extra para calcular o peso ideal de uma pessoa com base na altura.
 
