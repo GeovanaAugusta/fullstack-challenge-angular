@@ -25,6 +25,12 @@ export class WeightCalculatorComponent implements OnInit {
 
   showPeople = true;
 
+  showPopup = false;
+
+  popupMessage = '';
+
+  popupClass = '';
+
   constructor(private fb: FormBuilder, private pessoaService: PersonService) {
     this.personForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
@@ -147,35 +153,57 @@ export class WeightCalculatorComponent implements OnInit {
     });
   }
 
-  search() {
+  showNotification(message: string, type: 'success' | 'warning' | 'error') {
+    this.popupMessage = message;
+    this.popupClass = `popup-${type}`;
+    this.showPopup = true;
+    setTimeout(() => this.closePopup(), 1000);
+  }
+  closePopup() {
+    this.showPopup = false;
+  }
 
+  search() {
     this.showPeople = true;
 
     if (this.personForm.get('document')?.valid) {
       const cpf = this.personForm.get('document')?.value.replace(/\D/g, '');
       this.pessoaService.searchPerson(cpf).subscribe({
         next: (data) => {
-          console.log(data);
-          this.selectedPerson = true;
-          this.selectedPersonId = data.id;
+          if (data.length > 0) {
+            this.showNotification('Usuários carregados com sucesso!', 'success');
+            this.selectedPerson = true;
+            this.selectedPersonId = data.id;
+          } else {
+            this.showNotification('Nenhum usuário encontrado!', 'warning');
+          }
         },
-        error: (err) => console.error(err)
+        error: (err) => {
+          console.error(err);
+          this.showNotification('Ocorreu um erro.', 'error');
+        }
       });
     } else {
-      console.log(this.personForm.value);
       this.pessoaService.allPeople().subscribe({
-        next: (response) => console.log(response),
-        error: (err) => console.error(err)
+        next: (response) => {
+          this.availablePeople = response;
+          if (this.availablePeople.length > 0) {
+            this.showNotification('Usuários carregados com sucesso!', 'success');
+          } else {
+            this.showNotification('Nenhum usuário encontrado!', 'warning');
+          }
+        },
+        error: (err) => {
+          console.error(err);
+          this.showNotification('Erro ao carregar usuários!', 'error');
+        }
       });
-
-      this.availablePeople = people;
-
-      console.log(this.availablePeople);
     }
   }
 
   add() {
     if (this.personForm.valid) {
+      this.prepareFormValues();
       const payload = {
         nome: this.personForm.value.name,
         data_nasc: this.personForm.value.born.split('/').reverse().join('/'),
@@ -186,49 +214,56 @@ export class WeightCalculatorComponent implements OnInit {
       };
 
       this.pessoaService.addPerson(payload).subscribe({
-        next: (response) => console.log(response),
-        error: (err) => console.error(err)
+        next: (response) => {
+          this.showNotification('Pessoa adicionada com sucesso.', 'success');
+          this.resetForm();
+        },
+        error: (err) => {
+          console.error(err);
+          this.showNotification('Erro ao adicionar pessoa.', 'error');
+        }
       });
-    } else {
-      console.log(this.personForm.value);
     }
   }
 
   update() {
     if (this.selectedPersonId && this.personForm.valid) {
-      const formValue = this.personForm.value;
       const payload = {
-        nome: formValue.name,
-        data_nasc: formValue.born.split('/').reverse().join('/'),
-        cpf: formValue.document.replace(/\D/g, ''),
-        sexo: formValue.gender,
-        altura: Number(formValue.height),
-        peso: Number(formValue.weight)
+        id: this.selectedPersonId,
+        nome: this.personForm.value.name,
+        data_nasc: this.personForm.value.born.split('/').reverse().join('/'),
+        cpf: this.personForm.value.document.replace(/\D/g, ''),
+        sexo: this.personForm.value.gender,
+        altura: Number(this.personForm.value.height),
+        peso: Number(this.personForm.value.weight)
       };
 
       this.pessoaService.updatePerson(payload, this.selectedPersonId).subscribe({
-        next: () => {
+        next: (response) => {
+          this.showNotification('Pessoa atualizada com sucesso!', 'success');
           this.resetForm();
         },
         error: (err) => {
           console.error(err);
+          this.showNotification('Erro ao atualizar a pessoa!', 'error');
         }
       });
-    } else {
     }
   }
 
   delete() {
     if (this.selectedPersonId) {
       this.pessoaService.deletePerson(this.selectedPersonId).subscribe({
-        next: (response) => {
-          this.selectedPerson = false;
-          this.selectedPersonId = undefined;
+        next: () => {
+          this.showNotification('Pessoa excluída com sucesso!', 'success');
           this.resetForm();
+          this.selectedPersonId = undefined;
         },
-        error: (err) => console.error(err)
+        error: (err) => {
+          console.error(err);
+          this.showNotification('Erro ao excluir a pessoa!', 'error');
+        }
       });
-    } else {
     }
   }
 }

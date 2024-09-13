@@ -151,3 +151,9 @@
         </div>
     </div>
 </section>
+
+<div *ngIf="showPopup" class="popup">
+    <div [ngClass]="popupClass" class="popup-content">
+        <p>{{ popupMessage }}</p>
+    </div>
+</div>
