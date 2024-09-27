@@ -4,7 +4,7 @@ Este é um projeto fullstack criado como parte de um desafio de desenvolvimento.
 
 ## Estrutura do Projeto
 
-- **Frontend:** Angular 17.x
+- **Frontend:** Angular 17.1.0
 
 ## Funcionalidades
 
